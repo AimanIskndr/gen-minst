@@ -52,7 +52,7 @@ def generate_images(generator, digit, n_samples=5):
 
 # ====== Streamlit UI ======
 st.title("🖊️ Handwritten Digit Image Generator")
-st.markdown("Generate synthetic MNIST-like images using your trained model.")
+st.markdown("Generate synthetic MNIST-like images.")
 
 digit = st.selectbox("Choose a digit to generate (0-9):", list(range(10)), index=0)
 
