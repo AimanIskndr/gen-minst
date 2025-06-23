@@ -51,8 +51,9 @@ def generate_images(generator, digit, n_samples=5):
     z = torch.randn(n_samples, 100)
     labels = torch.full((n_samples,), digit, dtype=torch.long)
     with torch.no_grad():
-        images = generator(z, labels).detach().cpu()
+        images = generator(z, labels).cpu()
     return images
+
 
 # ====== Streamlit UI ======
 st.title("🖊️ Handwritten Digit Image Generator")
