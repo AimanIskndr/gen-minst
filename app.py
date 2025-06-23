@@ -5,11 +5,12 @@ import torchvision.utils as vutils
 import matplotlib.pyplot as plt
 import numpy as np
 
-# ====== Generator definition (must match trained model) ======
+# ====== Generator definition ======
 class Generator(nn.Module):
     def __init__(self, latent_dim=100, n_classes=10, img_shape=(1, 28, 28)):
         super(Generator, self).__init__()
         self.label_emb = nn.Embedding(n_classes, n_classes)
+
         self.model = nn.Sequential(
             nn.Linear(latent_dim + n_classes, 128),
             nn.LeakyReLU(0.2, inplace=True),
@@ -22,18 +23,21 @@ class Generator(nn.Module):
             nn.BatchNorm1d(512),
             nn.LeakyReLU(0.2, inplace=True),
 
-            nn.Linear(512, int(np.prod(img_shape))),
+            nn.Linear(512, 1024),
+            nn.BatchNorm1d(1024),
+            nn.LeakyReLU(0.2, inplace=True),
+
+            nn.Linear(1024, 784),
             nn.Tanh()
         )
         self.img_shape = img_shape
 
     def forward(self, noise, labels):
-        # Concatenate label embedding with noise
         gen_input = torch.cat((noise, self.label_emb(labels)), -1)
         img = self.model(gen_input)
         img = img.view(img.size(0), *self.img_shape)
         return img
-
+    
 # ====== Load trained generator ======
 @st.cache_resource
 def load_generator():
