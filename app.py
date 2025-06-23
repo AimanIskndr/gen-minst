@@ -4,6 +4,7 @@ import torch.nn as nn
 import torchvision.utils as vutils
 import matplotlib.pyplot as plt
 import numpy as np
+import time
 
 # ====== Generator definition ======
 class Generator(nn.Module):
@@ -48,12 +49,13 @@ def load_generator():
 
 # ====== Generate Images ======
 def generate_images(generator, digit, n_samples=5):
+    seed = int((time.time() * 1000) % 100000)  # unique per generation
+    torch.manual_seed(seed)
     z = torch.randn(n_samples, 100)
     labels = torch.full((n_samples,), digit, dtype=torch.long)
     with torch.no_grad():
         images = generator(z, labels).cpu()
     return images
-
 
 # ====== Streamlit UI ======
 st.title("🖊️ Handwritten Digit Image Generator")
